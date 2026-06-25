@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Selamat Ulang Tahun 🎂</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* =============================================
+       RESET & BASE
+    ============================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:   #FFF5EE;
+      --blush:   #F7C5C0;
+      --rose:    #E8A598;
+      --gold:    #C9A96E;
+      --brown:   #8B6F5C;
+      --parchm:  #F9E4C8;
+      --parchm2: #EDD9A3;
+      --text:    #5C3D2E;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--cream);
+      font-family: 'Lato', sans-serif;
+      overflow-x: hidden;
+      color: var(--text);
+    }
+
+    /* =============================================
+       STAGES — hanya satu stage yang visible
+    ============================================= */
+    .stage {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.8s ease;
+      padding: 1rem;
+    }
+    .stage.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* =============================================
+       BACKGROUND GRADIENT
+    ============================================= */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at 60% 20%, #fde8df 0%, var(--cream) 60%),
+                  radial-gradient(ellipse at 10% 80%, #fde0d0 0%, transparent 50%);
+      z-index: -2;
+    }
+
+    /* =============================================
+       STAGE 1 — KADO
+    ============================================= */
+    #stage-gift {
+      z-index: 10;
+    }
+
+    .hint-text {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(1rem, 3vw, 1.4rem);
+      color: var(--brown);
+      margin-bottom: 2rem;
+      text-align: center;
+      letter-spacing: 0.02em;
+      opacity: 0;
+      animation: fadeInDown 1s 0.5s forwards;
+    }
+
+    /* Kotak Kado */
+    .gift-wrapper {
+      cursor: pointer;
+      position: relative;
+      width: clamp(140px, 30vw, 200px);
+      height: clamp(140px, 30vw, 200px);
+      animation: wiggle 1.4s 1.2s ease-in-out infinite;
+      filter: drop-shadow(0 12px 28px rgba(200,120,100,0.25));
+    }
+    .gift-wrapper:hover { animation: wiggleFast 0.4s ease-in-out infinite; }
+
+    /* Kotak bawah */
+    .gift-box {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 80%;
+      background: linear-gradient(135deg, var(--blush) 0%, var(--rose) 100%);
+      border-radius: 6px 6px 10px 10px;
+      transition: all 0.6s ease;
+    }
+    /* Garis vertikal pita */
+    .gift-box::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0; bottom: 0;
+      width: 20%;
+      transform: translateX(-50%);
+      background: var(--gold);
+      border-radius: 2px;
+    }
+    /* Lekukan bawah */
+    .gift-box::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 10%; right: 10%;
+      height: 12%;
+      background: rgba(255,255,255,0.15);
+      border-radius: 0 0 10px 10px;
+    }
+
+    /* Tutup kado */
+    .gift-lid {
+      position: absolute;
+      top: 0;
+      left: -6%;
+      width: 112%;
+      height: 26%;
+      background: linear-gradient(135deg, #f9d5cf 0%, var(--rose) 100%);
+      border-radius: 8px;
+      transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: center bottom;
+      z-index: 2;
+    }
+    /* Pita horizontal di tutup */
+    .gift-lid::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 0; right: 0;
+      height: 36%;
+      transform: translateY(-50%);
+      background: var(--gold);
+      border-radius: 2px;
+    }
+
+    /* Pita simpul (bow) */
+    .gift-bow {
+      position: absolute;
+      top: -28%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 48%;
+      z-index: 3;
+      transition: all 0.7s ease;
+    }
+    .bow-left, .bow-right {
+      position: absolute;
+      top: 30%;
+      width: 48%;
+      height: 70%;
+      background: var(--gold);
+      border-radius: 50% 50% 10% 10%;
+      transform-origin: bottom center;
+    }
+    .bow-left  { left: 0;   transform: rotate(-30deg); }
+    .bow-right { right: 0;  transform: rotate(30deg); }
+    .bow-center {
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 22%;
+      height: 30%;
+      background: #d4a855;
+      border-radius: 4px;
+      z-index: 1;
+    }
+
+    /* Animasi kado terbuka */
+    .gift-wrapper.opening .gift-lid {
+      transform: translateY(-120%) rotate(-15deg);
+      opacity: 0;
+    }
+    .gift-wrapper.opening .gift-bow {
+      transform: translateX(-50%) translateY(-140%) rotate(-20deg);
+      opacity: 0;
+    }
+    .gift-wrapper.opening .gift-box {
+      animation: boxOpen 0.5s 0.3s forwards;
+    }
+
+    /* =============================================
+       STAGE 2 — BUNGA & KERTAS
+    ============================================= */
+    #stage-reveal {
+      z-index: 5;
+      justify-content: flex-end;
+      padding-bottom: 0;
+    }
+
+    .reveal-scene {
+      width: 100%;
+      max-width: 700px;
+      position: relative;
+      height: 90vh;
+      margin: 0 auto;
+    }
+
+    /* === BUNGA CSS === */
+    .flower {
+      position: absolute;
+      opacity: 0;
+      transform-origin: bottom center;
+    }
+    .flower.bloomed { animation: bloomIn 1s forwards ease-out; }
+
+    .flower-stem {
+      width: 3px;
+      background: #a0c878;
+      margin: 0 auto;
+      border-radius: 2px;
+      position: relative;
+    }
+    .flower-stem::before { /* daun kiri */
+      content: '';
+      position: absolute;
+      left: -12px; top: 30%;
+      width: 14px; height: 8px;
+      background: #a0c878;
+      border-radius: 50% 0 50% 0;
+      transform: rotate(-20deg);
+    }
+    .flower-stem::after { /* daun kanan */
+      content: '';
+      position: absolute;
+      right: -12px; top: 50%;
+      width: 14px; height: 8px;
+      background: #a0c878;
+      border-radius: 0 50% 0 50%;
+      transform: rotate(20deg);
+    }
+
+    .flower-head {
+      position: relative;
+      margin: 0 auto;
+      margin-bottom: 0;
+    }
+    .petal {
+      position: absolute;
+      border-radius: 50% 50% 50% 0;
+      transform-origin: bottom right;
+    }
+    .flower-center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: var(--gold);
+      z-index: 2;
+    }
+
+    /* Bunga 1 — mawar merah muda besar */
+    .flower-1 { bottom: 0; left: 5%; animation-delay: 0.1s; }
+    .flower-1 .flower-stem { height: 160px; }
+    .flower-1 .flower-head { width: 60px; height: 60px; }
+    .flower-1 .petal { width: 28px; height: 28px; background: #F7C5C0; }
+    .flower-1 .petal:nth-child(1) { transform: rotate(0deg)   translate(-14px,-14px); }
+    .flower-1 .petal:nth-child(2) { transform: rotate(45deg)  translate(-14px,-14px); }
+    .flower-1 .petal:nth-child(3) { transform: rotate(90deg)  translate(-14px,-14px); }
+    .flower-1 .petal:nth-child(4) { transform: rotate(135deg) translate(-14px,-14px); }
+    .flower-1 .petal:nth-child(5) { transform: rotate(180deg) translate(-14px,-14px); }
+    .flower-1 .petal:nth-child(6) { transform: rotate(225deg) translate(-14px,-14px); }
+    .flower-1 .petal:nth-child(7) { transform: rotate(270deg) translate(-14px,-14px); }
+    .flower-1 .petal:nth-child(8) { transform: rotate(315deg) translate(-14px,-14px); }
+    .flower-1 .flower-center { width: 18px; height: 18px; }
+
+    /* Bunga 2 — ungu muda kecil */
+    .flower-2 { bottom: 0; left: 18%; animation-delay: 0.3s; }
+    .flower-2 .flower-stem { height: 110px; }
+    .flower-2 .flower-head { width: 40px; height: 40px; }
+    .flower-2 .petal { width: 20px; height: 20px; background: #D4B8E0; }
+    .flower-2 .petal:nth-child(1) { transform: rotate(0deg)   translate(-10px,-10px); }
+    .flower-2 .petal:nth-child(2) { transform: rotate(60deg)  translate(-10px,-10px); }
+    .flower-2 .petal:nth-child(3) { transform: rotate(120deg) translate(-10px,-10px); }
+    .flower-2 .petal:nth-child(4) { transform: rotate(180deg) translate(-10px,-10px); }
+    .flower-2 .petal:nth-child(5) { transform: rotate(240deg) translate(-10px,-10px); }
+    .flower-2 .petal:nth-child(6) { transform: rotate(300deg) translate(-10px,-10px); }
+    .flower-2 .flower-center { width: 12px; height: 12px; }
+
+    /* Bunga 3 — peach besar kanan */
+    .flower-3 { bottom: 0; right: 6%; animation-delay: 0.2s; }
+    .flower-3 .flower-stem { height: 180px; }
+    .flower-3 .flower-head { width: 70px; height: 70px; }
+    .flower-3 .petal { width: 32px; height: 32px; background: #F9C9A4; }
+    .flower-3 .petal:nth-child(1) { transform: rotate(0deg)   translate(-16px,-16px); }
+    .flower-3 .petal:nth-child(2) { transform: rotate(45deg)  translate(-16px,-16px); }
+    .flower-3 .petal:nth-child(3) { transform: rotate(90deg)  translate(-16px,-16px); }
+    .flower-3 .petal:nth-child(4) { transform: rotate(135deg) translate(-16px,-16px); }
+    .flower-3 .petal:nth-child(5) { transform: rotate(180deg) translate(-16px,-16px); }
+    .flower-3 .petal:nth-child(6) { transform: rotate(225deg) translate(-16px,-16px); }
+    .flower-3 .petal:nth-child(7) { transform: rotate(270deg) translate(-16px,-16px); }
+    .flower-3 .petal:nth-child(8) { transform: rotate(315deg) translate(-16px,-16px); }
+    .flower-3 .flower-center { width: 20px; height: 20px; }
+
+    /* Bunga 4 — pink tua sedang */
+    .flower-4 { bottom: 0; right: 22%; animation-delay: 0.4s; }
+    .flower-4 .flower-stem { height: 130px; }
+    .flower-4 .flower-head { width: 48px; height: 48px; }
+    .flower-4 .petal { width: 22px; height: 22px; background: #E8A598; }
+    .flower-4 .petal:nth-child(1) { transform: rotate(0deg)   translate(-11px,-11px); }
+    .flower-4 .petal:nth-child(2) { transform: rotate(60deg)  translate(-11px,-11px); }
+    .flower-4 .petal:nth-child(3) { transform: rotate(120deg) translate(-11px,-11px); }
+    .flower-4 .petal:nth-child(4) { transform: rotate(180deg) translate(-11px,-11px); }
+    .flower-4 .petal:nth-child(5) { transform: rotate(240deg) translate(-11px,-11px); }
+    .flower-4 .petal:nth-child(6) { transform: rotate(300deg) translate(-11px,-11px); }
+    .flower-4 .flower-center { width: 14px; height: 14px; }
+
+    /* Bunga 5 — kecil kuning tengah */
+    .flower-5 { bottom: 0; left: 50%; transform: translateX(-50%); animation-delay: 0.5s; }
+    .flower-5 .flower-stem { height: 90px; }
+    .flower-5 .flower-head { width: 36px; height: 36px; }
+    .flower-5 .petal { width: 18px; height: 18px; background: #F9E4A0; }
+    .flower-5 .petal:nth-child(1) { transform: rotate(0deg)   translate(-9px,-9px); }
+    .flower-5 .petal:nth-child(2) { transform: rotate(45deg)  translate(-9px,-9px); }
+    .flower-5 .petal:nth-child(3) { transform: rotate(90deg)  translate(-9px,-9px); }
+    .flower-5 .petal:nth-child(4) { transform: rotate(135deg) translate(-9px,-9px); }
+    .flower-5 .petal:nth-child(5) { transform: rotate(180deg) translate(-9px,-9px); }
+    .flower-5 .petal:nth-child(6) { transform: rotate(225deg) translate(-9px,-9px); }
+    .flower-5 .petal:nth-child(7) { transform: rotate(270deg) translate(-9px,-9px); }
+    .flower-5 .petal:nth-child(8) { transform: rotate(315deg) translate(-9px,-9px); }
+    .flower-5 .flower-center { width: 10px; height: 10px; }
+
+    /* === GULUNGAN KERTAS === */
+    .scroll-area {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: clamp(1rem, 4vw, 2.5rem);
+      align-items: flex-start;
+      justify-content: center;
+      flex-wrap: wrap;
+      width: 100%;
+      padding: 0 1rem;
+    }
+
+    .parchment {
+      opacity: 0;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+    }
+    .parchment.appeared { animation: unfurl 0.8s forwards ease-out; }
+    .parchment:hover { transform: translateY(-8px) rotate(1deg) scale(1.04); }
+
+    .parchment-inner {
+      background: linear-gradient(160deg, var(--parchm) 0%, var(--parchm2) 100%);
+      border-radius: 6px 6px 4px 4px;
+      padding: 1.4rem 1.2rem 1rem;
+      width: clamp(90px, 22vw, 130px);
+      box-shadow: 3px 6px 20px rgba(140,90,60,0.22), inset 0 0 12px rgba(200,160,80,0.15);
+      position: relative;
+      overflow: hidden;
+    }
+    .parchment-inner::before { /* texture lines */
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        180deg,
+        transparent,
+        transparent 22px,
+        rgba(160,110,50,0.08) 22px,
+        rgba(160,110,50,0.08) 23px
+      );
+    }
+
+    .scroll-ribbon {
+      width: 100%;
+      height: 8px;
+      background: var(--rose);
+      border-radius: 4px 4px 0 0;
+      margin-bottom: 0.6rem;
+    }
+
+    .parchment-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 0.4rem 0;
+    }
+    .p-line {
+      height: 3px;
+      background: rgba(140,90,60,0.2);
+      border-radius: 2px;
+    }
+    .p-line:nth-child(2) { width: 80%; }
+    .p-line:nth-child(3) { width: 65%; }
+
+    .parchment-wax {
+      width: 22px;
+      height: 22px;
+      background: radial-gradient(circle at 40% 35%, #f0c060, #c07030);
+      border-radius: 50%;
+      margin: 0.6rem auto 0;
+      box-shadow: 0 2px 5px rgba(150,80,20,0.3);
+    }
+    .parchment-wax::after {
+      content: '✦';
+      display: block;
+      text-align: center;
+      font-size: 9px;
+      color: rgba(255,255,255,0.6);
+      line-height: 22px;
+    }
+
+    /* Nomor kertas */
+    .parchment:nth-child(1) { animation-delay: 0.6s; transform-origin: top center; }
+    .parchment:nth-child(2) { animation-delay: 0.9s; transform-origin: top center; }
+    .parchment:nth-child(3) { animation-delay: 1.2s; transform-origin: top center; }
+
+    .click-hint {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--brown);
+      opacity: 0.6;
+      margin-top: 4px;
+      font-style: italic;
+    }
+
+    /* =============================================
+       STAGE 3 — SURAT (LETTER OVERLAY)
+    ============================================= */
+    #stage-letter {
+      z-index: 20;
+      background: rgba(255, 245, 238, 0.6);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .letter-card {
+      background: linear-gradient(160deg, var(--parchm) 0%, #f5dba8 100%);
+      border-radius: 12px;
+      width: min(600px, 92vw);
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: clamp(1.8rem, 5vw, 3rem) clamp(1.5rem, 5vw, 2.8rem);
+      box-shadow: 0 20px 60px rgba(140,90,60,0.3), inset 0 0 30px rgba(200,160,80,0.1);
+      position: relative;
+      animation: letterOpen 0.6s ease-out;
+      scrollbar-width: thin;
+      scrollbar-color: var(--rose) transparent;
+    }
+
+    .letter-card::before { /* ruled lines */
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      background: repeating-linear-gradient(
+        180deg,
+        transparent,
+        transparent 36px,
+        rgba(160,110,50,0.08) 36px,
+        rgba(160,110,50,0.08) 37px
+      );
+      pointer-events: none;
+    }
+
+    /* Pita atas surat */
+    .letter-ribbon {
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, transparent, var(--rose), var(--gold), var(--rose), transparent);
+      border-radius: 3px;
+      margin-bottom: 1.8rem;
+      opacity: 0.7;
+    }
+
+    /* =============================================
+       KONTEN SURAT — EDIT BAGIAN INI
+       Ganti teks di dalam tag yang bertanda komentar
+    ============================================= */
+
+    /* Nama penerima */
+    .letter-to {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(0.85rem, 2.5vw, 1rem);
+      color: var(--brown);
+      opacity: 0.75;
+      margin-bottom: 0.3rem;
+    }
+
+    /* Judul ucapan besar */
+    .letter-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      font-weight: 700;
+      color: var(--brown);
+      line-height: 1.2;
+      margin-bottom: 1.6rem;
+    }
+    .letter-title span {
+      color: var(--rose);
+      display: block;
+      font-style: italic;
+    }
+
+    /* Paragraf isi surat */
+    .letter-body {
+      font-size: clamp(0.9rem, 2.2vw, 1.05rem);
+      line-height: 1.85;
+      color: var(--text);
+      font-weight: 300;
+    }
+    .letter-body p { margin-bottom: 1rem; }
+    .letter-body p:last-child { margin-bottom: 0; }
+
+    /* Penutup & tanda tangan */
+    .letter-closing {
+      margin-top: 1.8rem;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      color: var(--brown);
+      font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+    }
+    .letter-signature {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.1rem, 3vw, 1.4rem);
+      font-weight: 700;
+      color: var(--rose);
+      margin-top: 0.3rem;
+    }
+
+    /* Tombol tutup */
+    .btn-close {
+      display: block;
+      margin: 2rem auto 0;
+      padding: 0.65rem 2.2rem;
+      background: linear-gradient(135deg, var(--rose), var(--blush));
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Lato', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(232,165,152,0.45);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .btn-close:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(232,165,152,0.55);
+    }
+
+    /* =============================================
+       KONFETI / KELOPAK BERJATUHAN
+    ============================================= */
+    #petal-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    /* =============================================
+       KEYFRAMES
+    ============================================= */
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(0deg); }
+      20%       { transform: rotate(-6deg); }
+      40%       { transform: rotate(6deg); }
+      60%       { transform: rotate(-4deg); }
+      80%       { transform: rotate(4deg); }
+    }
+    @keyframes wiggleFast {
+      0%, 100% { transform: rotate(0deg) scale(1.05); }
+      50%       { transform: rotate(8deg) scale(1.05); }
+    }
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes boxOpen {
+      0%   { transform: scaleY(1); }
+      50%  { transform: scaleY(1.08); }
+      100% { transform: scaleY(0.9); opacity: 0.4; }
+    }
+    @keyframes bloomIn {
+      0%   { opacity: 0; transform: translateY(30px) scaleY(0.3); }
+      60%  { opacity: 1; transform: translateY(-8px) scaleY(1.05); }
+      100% { opacity: 1; transform: translateY(0) scaleY(1); }
+    }
+    @keyframes unfurl {
+      0%   { opacity: 0; transform: scaleY(0) translateY(-20px); }
+      70%  { opacity: 1; transform: scaleY(1.05) translateY(4px); }
+      100% { opacity: 1; transform: scaleY(1) translateY(0); }
+    }
+    @keyframes letterOpen {
+      from { opacity: 0; transform: scale(0.85) translateY(20px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* =============================================
+       RESPONSIVE TWEAKS
+    ============================================= */
+    @media (max-width: 480px) {
+      .flower-1 .flower-stem { height: 120px; }
+      .flower-3 .flower-stem { height: 140px; }
+      .reveal-scene { height: 95vh; }
+      .scroll-area { top: 8%; gap: 0.8rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .gift-wrapper { animation: none; }
+      .flower.bloomed { animation: none; opacity: 1; }
+      .parchment.appeared { animation: none; opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Kanvas kelopak berjatuhan -->
+  <canvas id="petal-canvas"></canvas>
+
+  <!-- =============================================
+       STAGE 1: HALAMAN AWAL — KADO
+  ============================================= -->
+  <section id="stage-gift" class="stage active">
+
+    <!-- Teks petunjuk -->
+    <p class="hint-text">Ada sesuatu untukmu,<br>klik untuk membuka! 🎁</p>
+
+    <!-- Kotak kado — klik untuk membuka -->
+    <div class="gift-wrapper" id="gift">
+
+      <!-- Tutup kado -->
+      <div class="gift-lid">
+        <!-- Simpul pita -->
+        <div class="gift-bow">
+          <div class="bow-left"></div>
+          <div class="bow-right"></div>
+          <div class="bow-center"></div>
+        </div>
+      </div>
+
+      <!-- Badan kotak -->
+      <div class="gift-box"></div>
+
+    </div>
+  </section>
+
+
+  <!-- =============================================
+       STAGE 2: BUNGA & KERTAS
+  ============================================= -->
+  <section id="stage-reveal" class="stage">
+
+    <div class="reveal-scene">
+
+      <!-- Gulungan / lembaran kertas — klik salah satunya untuk membaca surat -->
+      <div class="scroll-area">
+
+        <!-- Kertas 1 -->
+        <div class="parchment">
+          <div class="parchment-inner">
+            <div class="scroll-ribbon"></div>
+            <div class="parchment-lines">
+              <div class="p-line"></div>
+              <div class="p-line"></div>
+              <div class="p-line"></div>
+            </div>
+            <div class="parchment-wax"></div>
+          </div>
+          <p class="click-hint">klik untuk membaca ✦</p>
+        </div>
+
+        <!-- Kertas 2 -->
+        <div class="parchment">
+          <div class="parchment-inner">
+            <div class="scroll-ribbon"></div>
+            <div class="parchment-lines">
+              <div class="p-line"></div>
+              <div class="p-line"></div>
+              <div class="p-line"></div>
+            </div>
+            <div class="parchment-wax"></div>
+          </div>
+        </div>
+
+        <!-- Kertas 3 -->
+        <div class="parchment">
+          <div class="parchment-inner">
+            <div class="scroll-ribbon"></div>
+            <div class="parchment-lines">
+              <div class="p-line"></div>
+              <div class="p-line"></div>
+              <div class="p-line"></div>
+            </div>
+            <div class="parchment-wax"></div>
+          </div>
+        </div>
+
+      </div><!-- /scroll-area -->
+
+      <!-- ===== BUNGA-BUNGA CSS ===== -->
+
+      <!-- Bunga 1: Mawar pink besar kiri -->
+      <div class="flower flower-1">
+        <div class="flower-head">
+          <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+          <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+          <div class="petal"></div><div class="petal"></div>
+          <div class="flower-center"></div>
+        </div>
+        <div class="flower-stem"></div>
+      </div>
+
+      <!-- Bunga 2: Lavender kecil kiri -->
+      <div class="flower flower-2">
+        <div class="flower-head">
+          <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+          <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+          <div class="flower-center"></div>
+        </div>
+        <div class="flower-stem"></div>
+      </div>
+
+      <!-- Bunga 3: Peach besar kanan -->
+      <div class="flower flower-3">
+        <div class="flower-head">
+          <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+          <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+          <div class="petal"></div><div class="petal"></div>
+          <div class="flower-center"></div>
+        </div>
+        <div class="flower-stem"></div>
+      </div>
+
+      <!-- Bunga 4: Pink tua sedang kanan -->
+      <div class="flower flower-4">
+        <div class="flower-head">
+          <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+          <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+          <div class="flower-center"></div>
+        </div>
+        <div class="flower-stem"></div>
+      </div>
+
+      <!-- Bunga 5: Kuning kecil tengah -->
+      <div class="flower flower-5">
+        <div class="flower-head">
+          <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+          <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+          <div class="petal"></div><div class="petal"></div>
+          <div class="flower-center"></div>
+        </div>
+        <div class="flower-stem"></div>
+      </div>
+
+    </div><!-- /reveal-scene -->
+  </section>
+
+
+  <!-- =============================================
+       STAGE 3: SURAT UCAPAN (OVERLAY)
+       Aktif saat kertas diklik, di atas stage-reveal
+  ============================================= -->
+  <section id="stage-letter" class="stage">
+
+    <div class="letter-card">
+
+      <!-- Pita dekoratif atas -->
+      <div class="letter-ribbon"></div>
+
+      <!-- ===================================================
+           BAGIAN YANG BISA KAMU EDIT:
+           Ganti teks di dalam tag HTML berikut sesuai keinginanmu
+      ==================================================== -->
+
+      <!-- Kepada siapa surat ini ditujukan — EDIT DI SINI -->
+      <p class="letter-to">Untuk,</p>
+
+      <!-- Nama penerima & subjudul — EDIT DI SINI -->
+      <h1 class="letter-title">
+        Rinn
+        <span>Selamat Ulang Tahun! 🌸</span>
+      </h1>
+
+      <!-- Isi surat ucapan — EDIT PARAGRAF-PARAGRAF DI SINI -->
+      <div class="letter-body">
+
+        <!-- Paragraf pembuka — EDIT DI SINI -->
+        <p>
+          Hai rinn! Di hari istimewa ini, aku ingin kamu tahu betapa berartinya
+          kehadiranmu dalam hidupku. Kamu adalah salah satu orang yang selalu bisa
+          membuatku tersenyum, bahkan di hari-hari yang paling berat sekalipun.
+        </p>
+
+        <!-- Paragraf kenangan / cerita — EDIT DI SINI -->
+        <p>
+          Masih ingat waktu pertama kali kita ketemu?yang berawal dari fishit,dan aku gak menyangka kita bakal sedekat ini dan ini,salah satu kenangan terindah yang aku simpan. Bersama kamu, setiap momen
+          terasa lebih berwarna dan penuh tawa.
+        </p>
+
+        <!-- Paragraf doa & harapan — EDIT DI SINI -->
+        <p>
+          Di ulang tahunmu ini, aku mendoakan yang terbaik untukmu.
+          Semoga semua impianmu terwujud, kesehatanmu selalu terjaga, dan
+          kebahagiaanmu tak pernah pudar. Kamu pantas mendapatkan semua hal
+          indah yang ada di dunia ini.
+        </p>
+
+        <!-- Paragraf penutup — EDIT DI SINI -->
+        <p>
+          Terima kasih sudah menjadi temanku yang luar biasa. Aku sangat
+          bersyukur memilikimu. dan aku harap kita bisa seterusnya berteman yah. Here's to another year of adventures together! 🥂
+        </p>
+
+      </div><!-- /letter-body -->
+
+      <!-- Penutup surat & tanda tangan — EDIT DI SINI -->
+      <div class="letter-closing">
+        <p>Dengan penuh kasih sayang,</p>
+        <!-- Nama pengirim — EDIT DI SINI -->
+        <p class="letter-signature">ian anak tampan ✦</p>
+      </div>
+
+      <!-- ===================================================
+           AKHIR BAGIAN YANG BISA DIEDIT
+      ==================================================== -->
+
+      <!-- Tombol tutup surat -->
+      <button class="btn-close" id="btn-close">Tutup Surat ✕</button>
+
+    </div>
+  </section>
+
+
+  <!-- =============================================
+       JAVASCRIPT
+  ============================================= -->
+  <script>
+    // Semua kode dijalankan setelah DOM selesai dimuat
+    document.addEventListener('DOMContentLoaded', function () {
+
+      /* ---- Referensi elemen ---- */
+      var stageGift   = document.getElementById('stage-gift');
+      var stageReveal = document.getElementById('stage-reveal');
+      var stageLetter = document.getElementById('stage-letter');
+      var giftEl      = document.getElementById('gift');
+      var flowers     = document.querySelectorAll('.flower');
+      var parchments  = document.querySelectorAll('.parchment');
+      var btnClose    = document.getElementById('btn-close');
+      var canvas      = document.getElementById('petal-canvas');
+      var ctx         = canvas.getContext('2d');
+
+      /* ---- Resize canvas ---- */
+      function resizeCanvas() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      /* ========================================
+         KONFETI / KELOPAK BERJATUHAN
+      ======================================== */
+      var petals   = [];
+      var COLORS   = ['#F7C5C0','#E8A598','#D4B8E0','#F9C9A4','#F9E4A0','#C9A96E','#fde0d0'];
+      var animating = false;
+      var animId;
+      var spawnTimer = 0;
+
+      function spawnPetal() {
+        petals.push({
+          x: Math.random() * canvas.width,
+          y: -20,
+          r: Math.random() * 7 + 4,
+          vx: (Math.random() - 0.5) * 1.5,
+          vy: Math.random() * 1.5 + 0.8,
+          angle: Math.random() * Math.PI * 2,
+          spin: (Math.random() - 0.5) * 0.08,
+          color: COLORS[Math.floor(Math.random() * COLORS.length)],
+          shape: Math.random() > 0.5 ? 'petal' : 'circle',
+          opacity: Math.random() * 0.5 + 0.5
+        });
+      }
+
+      function drawPetal(p) {
+        ctx.save();
+        ctx.globalAlpha = p.opacity;
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.angle);
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        if (p.shape === 'petal') {
+          ctx.ellipse(0, 0, p.r * 0.6, p.r * 1.4, 0, 0, Math.PI * 2);
+        } else {
+          ctx.arc(0, 0, p.r, 0, Math.PI * 2);
+        }
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function animatePetals(ts) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        spawnTimer++;
+        if (spawnTimer % 3 === 0 && petals.length < 120) spawnPetal();
+        for (var i = petals.length - 1; i >= 0; i--) {
+          var p = petals[i];
+          p.x += p.vx + Math.sin(ts * 0.001 + i) * 0.4;
+          p.y += p.vy;
+          p.angle += p.spin;
+          if (p.y > canvas.height + 30) { petals.splice(i, 1); continue; }
+          drawPetal(p);
+        }
+        if (animating) animId = requestAnimationFrame(animatePetals);
+      }
+
+      function startPetals() {
+        if (animating) return;
+        animating = true;
+        requestAnimationFrame(animatePetals);
+      }
+
+      /* ========================================
+         STAGE 1 → 2 : Buka Kado
+      ======================================== */
+      function openGift() {
+        // Lepas listener agar tidak diklik dua kali
+        giftEl.removeEventListener('click', openGift);
+        giftEl.style.cursor = 'default';
+
+        // Jalankan animasi kado terbuka
+        giftEl.classList.add('opening');
+
+        // Pindah ke stage 2 setelah animasi selesai
+        setTimeout(function () {
+          stageGift.classList.remove('active');
+          stageReveal.classList.add('active');
+          startPetals();
+
+          // Bunga mekar satu per satu
+          flowers.forEach(function (f, i) {
+            setTimeout(function () { f.classList.add('bloomed'); }, i * 200 + 100);
+          });
+
+          // Kertas muncul satu per satu
+          parchments.forEach(function (p, i) {
+            setTimeout(function () { p.classList.add('appeared'); }, i * 280 + 400);
+          });
+        }, 900);
+      }
+
+      // Pasang listener klik pada kado
+      giftEl.addEventListener('click', openGift);
+
+      /* ========================================
+         STAGE 2 → 3 : Buka Surat
+      ======================================== */
+      function openLetter() {
+        stageLetter.classList.add('active');
+      }
+
+      // Pasang listener klik pada setiap kertas
+      parchments.forEach(function (p) {
+        p.addEventListener('click', openLetter);
+      });
+
+      /* ========================================
+         STAGE 3 → 2 : Tutup Surat
+      ======================================== */
+      function closeLetter() {
+        stageLetter.classList.remove('active');
+      }
+
+      // Tombol "Tutup Surat"
+      if (btnClose) btnClose.addEventListener('click', closeLetter);
+
+      // Klik di luar card juga menutup surat
+      stageLetter.addEventListener('click', function (e) {
+        if (e.target === stageLetter) closeLetter();
+      });
+
+      // Tombol ESC menutup surat
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeLetter();
+      });
+
+    }); // akhir DOMContentLoaded
+  </script>
+
+</body>
+</html>
